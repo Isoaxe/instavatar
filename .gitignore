@@ -1,6 +1,9 @@
-/node_modules
-.DS_Store
+# Build files
+node_modules
 
 # Firebase
 firestore-debug.log
 firebase-debug.log
+
+# Miscellaneous
+.DS_Store
