@@ -2,9 +2,5 @@
 .DS_Store
 
 # Firebase
-storage.rules
 firestore-debug.log
 firebase-debug.log
-firebase_auth.json
-firebase.json
-.firebaserc
