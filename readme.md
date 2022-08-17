@@ -20,3 +20,7 @@ Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `fireb
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
+
+### Configure variables
+
+Run through the items labelled as `TODO` in the project. The Instagram [`username` and `password`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L7) are set as environment variables via the [firebase secrets manager](https://firebase.google.com/docs/functions/config-env#secret-manager). It is advised to `set` the `INSTAGRAM_HANDLE` and `INSTAGRAM_PASSWORD` secrets so that they are accessible by `username` and `password` respectively. Alternatively, hardcode the values to these variables. This is not advised if the code is shared, for example on GitHub.
