@@ -4,8 +4,8 @@ import functions from 'firebase-functions'
 import fetch from 'node-fetch'
 
 // Using some account as 'viewer' because without login Instagram sometimes not response data
-const username = '' // viewer account login
-const password = '' // viewer account pass
+const username = process.env.INSTAGRAM_HANDLE // viewer account login
+const password = process.env.INSTAGRAM_PASSWORD // viewer account pass
 const bucketId = 'gs://insta-profile-pic.appspot.com/' // firebase bucket id
 const bucketPath = 'avatars' // firebase bucket folder
 const collectionName = 'instagram' // firestore collection for instagram api metainfo and session
