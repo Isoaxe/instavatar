@@ -3,7 +3,7 @@ import express from 'express'
 import admin from 'firebase-admin'
 import fs from 'fs'
 
-const bucketId = 'gs://avatars-663d5.appspot.com'
+const bucketId = 'gs://insta-profile-pic.appspot.com/'
 const firebaseCreds = 'firebase_auth.json'
 const bucketPath = 'avatars'
 
