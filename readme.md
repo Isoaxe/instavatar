@@ -17,6 +17,10 @@ Both Firestore and storage will need to be set up from within the [Firebase cons
 
 Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database, functions and emulators) as the initialisation files are already included within the app.
 
+### Create Instagram account
+
+Create a new Instagram account and take note of the handle and password. These will be used to set the `username` and `password` as outlined in the 'Configure variables' section below. An account is required for the app to programmatically login to Instagram and query the API.
+
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
