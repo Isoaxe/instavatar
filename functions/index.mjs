@@ -4,6 +4,7 @@ import functions from 'firebase-functions'
 import fetch from 'node-fetch'
 
 // Using some account as 'viewer' because without login Instagram sometimes not response data
+// TODO: Set username and password via Firebase secrets or else hardcode values below.
 const username = process.env.INSTAGRAM_HANDLE // viewer account login
 const password = process.env.INSTAGRAM_PASSWORD // viewer account pass
 const bucketId = 'gs://insta-profile-pic.appspot.com/' // firebase bucket id
