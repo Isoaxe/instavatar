@@ -199,6 +199,14 @@ async function storeProfilePic(user) {
   }
 }
 
+// Define secrets available in the app.
+const secrets = {
+  secrets: [
+    "INSTAGRAM_HANDLE",
+    "INSTAGRAM_PASSWORD",
+  ],
+};
+
 // Redirect version example.
 // Obtain image if needed and redirect to bucket public url
 let instapic = functions.https.onRequest(async (req, res) => {
