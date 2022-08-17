@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "firebase emulators:start"
+    "dev": "firebase emulators:start",
+    "deploy-all": "firebase deploy"
   },
   "dependencies": {
     "express": "^4.17.2",
