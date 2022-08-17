@@ -15,7 +15,7 @@ Both Firestore and storage will need to be set up from within the [Firebase cons
 
 ### Set up Firebase locally
 
-Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database and functions) as the initialisation files are already included within the app.
+Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database, functions and emulators) as the initialisation files are already included within the app.
 
 ### Development mode
 
