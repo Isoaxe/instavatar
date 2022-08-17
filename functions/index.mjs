@@ -7,6 +7,7 @@ import fetch from 'node-fetch'
 // TODO: Set username and password via Firebase secrets or else hardcode values below.
 const username = process.env.INSTAGRAM_HANDLE // viewer account login
 const password = process.env.INSTAGRAM_PASSWORD // viewer account pass
+// TODO: Set bucketId below to value from firebase storage section of project.
 const bucketId = 'gs://insta-profile-pic.appspot.com/' // firebase bucket id
 const bucketPath = 'avatars' // firebase bucket folder
 const collectionName = 'instagram' // firestore collection for instagram api metainfo and session
