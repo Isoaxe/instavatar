@@ -12,3 +12,7 @@ In order to get started, create a Firebase account.
 After logging into Firebase with your Google account credentials, create a new project. Then set the project billing to the Blaze (paid) plan. This is a formality and a requirement to use storage, there shouldn't be any actual charges to the account.
 
 Both Firestore and storage will need to be set up from within the [Firebase console](https://console.firebase.google.com).
+
+### Set up Firebase locally
+
+Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database and functions) as the initialisation files are already included within the app.
