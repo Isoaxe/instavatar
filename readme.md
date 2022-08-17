@@ -17,6 +17,14 @@ Both Firestore and storage will need to be set up from within the [Firebase cons
 
 Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database, functions and emulators) as the initialisation files are already included within the app.
 
+### Create Instagram account
+
+Create a new Instagram account and take note of the handle and password. These will be used to set the `username` and `password` as outlined in the 'Configure variables' section below. An account is required for the app to programmatically login to Instagram and query the API.
+
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
+
+### Configure variables
+
+Run through the items labelled as `TODO` in the project. The Instagram [`username` and `password`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L7) are set as environment variables via the [firebase secrets manager](https://firebase.google.com/docs/functions/config-env#secret-manager). It is advised to `set` the `INSTAGRAM_HANDLE` and `INSTAGRAM_PASSWORD` secrets so that they are accessible by `username` and `password` respectively. Alternatively, hardcode the values to these variables. This is not advised if the code is shared, for example on GitHub. Also set `bucketId` to value taken from Firebase storage in the project.

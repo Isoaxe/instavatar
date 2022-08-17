@@ -4,8 +4,10 @@ import functions from 'firebase-functions'
 import fetch from 'node-fetch'
 
 // Using some account as 'viewer' because without login Instagram sometimes not response data
-const username = '' // viewer account login
-const password = '' // viewer account pass
+// TODO: Set username and password via Firebase secrets or else hardcode values below.
+const username = process.env.INSTAGRAM_HANDLE // viewer account login
+const password = process.env.INSTAGRAM_PASSWORD // viewer account pass
+// TODO: Set bucketId below to value from firebase storage section of project.
 const bucketId = 'gs://insta-profile-pic.appspot.com/' // firebase bucket id
 const bucketPath = 'avatars' // firebase bucket folder
 const collectionName = 'instagram' // firestore collection for instagram api metainfo and session
@@ -199,9 +201,17 @@ async function storeProfilePic(user) {
   }
 }
 
+// Define secrets available in the app.
+const secrets = {
+  secrets: [
+    "INSTAGRAM_HANDLE",
+    "INSTAGRAM_PASSWORD",
+  ],
+};
+
 // Redirect version example.
 // Obtain image if needed and redirect to bucket public url
-let instapic = functions.https.onRequest(async (req, res) => {
+let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
   let url = null
   if (user) {
@@ -217,7 +227,7 @@ let instapic = functions.https.onRequest(async (req, res) => {
 })
 
 // Return image itself on requested url
-let instapicData = functions.https.onRequest(async (req, res) => {
+let instapicData = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
   let url = null
   if (user) {
