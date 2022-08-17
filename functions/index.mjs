@@ -209,7 +209,7 @@ const secrets = {
 
 // Redirect version example.
 // Obtain image if needed and redirect to bucket public url
-let instapic = functions.https.onRequest(async (req, res) => {
+let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
   let url = null
   if (user) {
@@ -225,7 +225,7 @@ let instapic = functions.https.onRequest(async (req, res) => {
 })
 
 // Return image itself on requested url
-let instapicData = functions.https.onRequest(async (req, res) => {
+let instapicData = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
   let url = null
   if (user) {
