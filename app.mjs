@@ -12,7 +12,8 @@ let rawdata = fs.readFileSync(firebaseCreds);
 let serviceAccount = JSON.parse(rawdata);
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket:'insta-profile-pic.appspot.com'
 });
 
 const storage = admin.storage().bucket(bucketId);
