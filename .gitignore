@@ -1,5 +1,6 @@
 # Build files
 node_modules
+*.cache
 
 # Firebase
 firestore-debug.log
