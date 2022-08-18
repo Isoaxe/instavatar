@@ -4,6 +4,7 @@ let img = document.querySelector('#result')
 let cache_info = document.querySelector('#cache_info')
 
 // Set API_URL based on whether locally hosted emulator is running or not.
+// TODO: Set both api urls to the values associated with your project.
 const localApiUrl = "http://localhost:5001/insta-profile-pic/us-central1/instapic";
 const remoteApiUrl = "https://us-central1-insta-profile-pic.cloudfunctions.net/instapic";
 const local = window.location.hostname === "localhost"; // true if local
