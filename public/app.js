@@ -12,7 +12,7 @@ const API_URL = local ? localApiUrl : remoteApiUrl;
 
 btn.addEventListener('click', async e => {
   let user = username.value
-  let result = await fetch(`/api/avatar?username=${user}`)
+  let result = await fetch(`${API_URL}?username=${user}`)
   let j = await result.json()
   console.log(j)
   username.value = null
