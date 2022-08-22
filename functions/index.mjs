@@ -4,6 +4,7 @@ import functions from 'firebase-functions';
 import fetch from 'node-fetch';
 
 // TODO: Set username and password via Firebase secrets or else hardcode values below.
+// Instagram credentials should be from an account created specifically for programmatic login.
 const username = process.env.INSTAGRAM_HANDLE;
 const password = process.env.INSTAGRAM_PASSWORD;
 const loginUrl = "https://www.instagram.com/accounts/login";
