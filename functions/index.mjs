@@ -62,8 +62,7 @@ async function storeProfilePic(user) {
 }
 
 /*
- *   Helper functions for the above function.
- *   As such, these do not get exported.
+ *   Helper functions below are for the above function.
  */
 
 // Get profile_pic_url_hd value from Instagram.
