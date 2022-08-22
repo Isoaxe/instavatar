@@ -1,204 +1,177 @@
-import Firestore from '@google-cloud/firestore'
+import Firestore from '@google-cloud/firestore';
 import { Storage } from '@google-cloud/storage';
-import functions from 'firebase-functions'
-import fetch from 'node-fetch'
+import functions from 'firebase-functions';
+import fetch from 'node-fetch';
 
-// Using some account as 'viewer' because without login Instagram sometimes not response data
 // TODO: Set username and password via Firebase secrets or else hardcode values below.
-const username = process.env.INSTAGRAM_HANDLE // viewer account login
-const password = process.env.INSTAGRAM_PASSWORD // viewer account pass
-// TODO: Set bucketId below to value from firebase storage section of project.
-const bucketId = 'gs://insta-profile-pic.appspot.com/' // firebase bucket id
-const bucketPath = 'avatars' // firebase bucket folder
-const collectionName = 'instagram' // firestore collection for instagram api metainfo and session
+const username = process.env.INSTAGRAM_HANDLE;
+const password = process.env.INSTAGRAM_PASSWORD;
+const loginUrl = "https://www.instagram.com/accounts/login";
+const userAgent =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
 
-const userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36'
-
-
-/* Init firebase part */
+// Initialize Firebase products.
 const db = new Firestore();
-const instagramDb = db.collection(collectionName);
-// Save or not full user info in DB (response from ?__a=1 api)
-const saveUserInfo = true
-// Default url if all ways of get pic failed (placeholder image url)
-const defaultPicUrl = null
+const storage = new Storage();
+const usersPath = db.collection("users");
+const instaPath = db.collection("instagram");
+// TODO: Set bucketId below to value from firebase storage section of project.
+const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
 
-const storage = new Storage()
-const bucket = storage.bucket(bucketId)
-
-
-// Store instagram cookies in firestore (instargram->__session) after login, reuse it latter
-async function getSessionCache() {
-  let doc = await instagramDb.doc('__session').get()
-  let data = doc.data()
-  let cookie = data ? data.cookie : null
-  return cookie
-}
-
-async function setSessionCache(cookie) {
-  await instagramDb.doc('__session').set({
-    cookie: cookie,
-    created: Date.now()
-  });
-}
-
-// Need to get csrf token before login
-async function csrfToken() {
-  let url = 'https://www.instagram.com/accounts/login/'
-  let options = {
-    'method': 'GET',
-    'headers': {
-      'Host': 'www.instagram.com',
-      'user-agent': userAgent
-    }
-  };
-  let response = await fetch(url, options)
-  let page = await response.text()
-  let csrf = page.match(/csrf_token\":\"(.*?)\"/)
-  return csrf !== null ? csrf[1] : null
-}
-
-// Do login and return resulting cookie string
-async function login(username, password) {
-  let url = 'https://www.instagram.com/accounts/login/ajax/'
-  let csrf = await csrfToken()
-  let options = {
-    method: 'POST',
-    headers: {
-      'user-agent': userAgent,
-      'x-csrftoken': csrf,
-      "x-requested-with": "XMLHttpRequest",
-      "referer": "https://www.instagram.com/accounts/login/"
-    },
-    body: new URLSearchParams({
-      enc_password: `#PWD_INSTAGRAM_BROWSER:0:${Date.now()}:${password}`,
-      username: username,
-      queryParams: '{}',
-      optIntoOneTap: 'false'
-    })
-  }
-  let response = await fetch(url, options)
-  let setCookie = response.headers.raw()['set-cookie']
-  let cookies = ''
-
-  for (let i = 0; i < setCookie.length; i++) {
-    let match = setCookie[i].match(/^[^;]+;/)
-    if (match) {
-      cookies = `${cookies} ${match[0]}`
-    }
-  }
-  return cookies
-}
-
-// Get profile_pic_hd URL
-async function getProfilePicUrl(user) {
-  //Check in CACHE first
-  let doc = await instagramDb.doc(user).get()
-  let data = doc.data()
-  if (data && data.profile_pic_url_hd) {
-    return data.profile_pic_url_hd
-  }
-
-  //check session exists or not
-  let sessionCookie = await getSessionCache()
-  if (!sessionCookie) {
-    sessionCookie = await login(username, password)
-    await setSessionCache(sessionCookie)
-  }
-  // profile_pic_url_hd can be parsed from user html page itself or from public api
-  // public_api need more testing
-  // Try with public api first, fallback to page parsing next
-  let profile_pic_hd = defaultPicUrl
-  try {
-    let response = await fetch(`https://instagram.com/${user}/?__a=1`, {
-      headers: {
-        cookie: sessionCookie
-      }
-    })
-    let page = await response.json()
-    if (saveUserInfo) {
-      try {
-        let userInfo = page.graphql?.user
-        await instagramDb.doc(user).set({
-          id: userInfo.id,
-          username: userInfo.username,
-          profile_pic_url_hd: userInfo.profile_pic_url_hd,
-          profile_pic_url: userInfo.profile_pic_url,
-          full_name: userInfo.full_name,
-          fbid: userInfo.fbid,
-          external_url: userInfo.external_url,
-          biography: userInfo.biography
-        })
-      } catch (e) {
-        console.log("Can't collect user_info from api", e)
-      }
-    }
-
-    profile_pic_hd = page.graphql?.user?.profile_pic_url_hd
-  } catch (e) {
-    console.log(e)
-    let response = await fetch(`https://instagram.com/${user}`, {
-      headers: {
-        cookie: sessionCookie
-      }
-    })
-    let page = await response.text()
-    let match = page.match(/profile_pic_url_hd":"(.+?)"/)
-
-    profile_pic_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null
-    if (saveUserInfo) {
-      try {
-        await instagramDb.doc(user).set({
-          username: user,
-          profile_pic_hd: profile_pic_hd
-        })
-      } catch (e) {
-        console.log("Can't collect user_info from parsing", e)
-      }
-    }
-  }
-  return profile_pic_hd
-}
-
+// Returns avatar url from Firebase Storage. Gets and stores it if not present.
 async function storeProfilePic(user) {
-  // return avatar if already exists
-  const file = bucket.file(`${bucketPath}/${user}.png`)
-  let exists = await file.exists()
+  // Return avatar if it already exists.
+  const file = bucket.file(`avatars/${user}.png`);
+  let exists = await file.exists();
   if (exists[0]) {
-    return file.publicUrl()
+    return file.publicUrl();
   }
 
-  // get url
-  let url = await getProfilePicUrl(user)
+  // Get url.
+  let url = await getProfilePicUrl(user);
   if (url) {
-    // load image
+    // Load image.
     try {
       let response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          referer: 'https://www.instagram.com/'
-        }
-      })
-      let data = await response.arrayBuffer()
-      const buffer = Buffer.from(data)
+          referer: "https://www.instagram.com/",
+        },
+      });
+      let data = await response.arrayBuffer();
+      const buffer = Buffer.from(data);
 
-      // store img file in bucket
+      // store img file in bucket.
       await file.save(buffer, {
         metadata: {
           contentType: "image/png",
           origin: ["*"],
-          instagram_pic_url: url
-        }
-      })
-      await file.makePublic()
-      return file.publicUrl()
-    } catch (e) {
-      console.log(e)
-      return null
+          instagram_pic_url: url,
+        },
+      });
+      await file.makePublic();
+      return file.publicUrl();
+    } catch (err) {
+      console.log("Saving of profile photo file failed:", err);
+      return null;
     }
   } else {
-    return null
+    return null;
   }
+}
+
+/*
+ *   Helper functions for the above function.
+ *   As such, these do not get exported.
+ */
+
+// Get profile_pic_url_hd value from Instagram.
+async function getProfilePicUrl(user) {
+  // Check Firestore user data first.
+  let userRef = await usersPath.doc(user).get();
+  let data = userRef.data();
+  if (data?.avatarUrl?.includes(user)) {
+    return data.avatarUrl;
+  }
+  // Check if session exists or not.
+  let sessionCookie = await getSessionCache();
+  if (!sessionCookie) {
+    sessionCookie = await login(username, password);
+    await setSessionCache(sessionCookie);
+  }
+  // profile_pic_url_hd can be parsed from user html page itself or from Public api.
+  // Public api needs more testing.
+  // Try with Public api first, fallback to page parsing after.
+  let profile_pic_hd = null;
+  try {
+    let response = await fetch(`https://instagram.com/${user}/?__a=1`, {
+      headers: {
+        cookie: sessionCookie,
+      },
+    });
+    let page = await response.json();
+
+    profile_pic_hd = page.graphql?.user?.profile_pic_url_hd;
+  } catch (err) {
+    console.log(
+      "Public api request failed. Now attempting to parse page:",
+      err
+    );
+    let response = await fetch(`https://instagram.com/${user}`, {
+      headers: {
+        cookie: sessionCookie,
+      },
+    });
+    let page = await response.text();
+    let match = page.match(/profile_pic_url_hd":"(.+?)"/);
+
+    profile_pic_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
+  }
+  return profile_pic_hd;
+}
+
+// Return session cache from Firestore if it exists.
+async function getSessionCache() {
+  let doc = await instaPath.doc("__session").get();
+  let data = doc.data();
+  let cookie = data ? data.cookie : null;
+  return cookie;
+}
+
+// Store Instagram cookies in Firestore after login for use later.
+async function setSessionCache(cookie) {
+  await instaPath.doc("__session").set({
+    cookie: cookie,
+    created: Date.now(),
+  });
+}
+
+// Do login and return resulting cookie string.
+async function login(username, password) {
+  let url = `${loginUrl}/ajax/`;
+  let csrf = await csrfToken();
+  let options = {
+    method: "POST",
+    headers: {
+      "user-agent": userAgent,
+      "x-csrftoken": csrf,
+      "x-requested-with": "XMLHttpRequest",
+      referer: loginUrl,
+    },
+    body: new URLSearchParams({
+      enc_password: `#PWD_INSTAGRAM_BROWSER:0:${Date.now()}:${password}`,
+      username,
+      queryParams: "{}",
+      optIntoOneTap: "false",
+    }),
+  };
+  let response = await fetch(url, options);
+  let setCookie = response.headers.raw()["set-cookie"];
+  let cookies = "";
+
+  for (let i = 0; i < setCookie.length; i++) {
+    let match = setCookie[i].match(/^[^;]+;/);
+    if (match) {
+      cookies = `${cookies} ${match[0]}`;
+    }
+  }
+  return cookies;
+}
+
+// Need to get CSRF token before login.
+async function csrfToken() {
+  let options = {
+    method: "GET",
+    headers: {
+      host: "www.instagram.com",
+      "user-agent": userAgent,
+    },
+  };
+  let response = await fetch(loginUrl, options);
+  let page = await response.text();
+  /* eslint-disable no-useless-escape */
+  let csrf = page.match(/csrf_token\":\"(.*?)\"/);
+  return csrf !== null ? csrf[1] : null;
 }
 
 // Define secrets available in the app.
