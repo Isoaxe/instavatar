@@ -15,9 +15,9 @@ const userAgent =
 // Initialize Firebase products.
 const db = new Firestore();
 const storage = new Storage();
-const usersPath = db.collection("users");
-const loginPath = db.collection("login");
-const bucketPath = "avatars";
+const usersPath = db.collection("users"); // Firestore path.
+const loginPath = db.collection("login"); // Firestore path.
+const bucketPath = "avatars"; // Firebase storage path.
 // TODO: Set bucketId below to value from firebase storage section of project.
 const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
 
