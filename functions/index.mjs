@@ -72,8 +72,8 @@ async function getProfilePicUrl(user) {
   // Check Firestore user data first.
   let userRef = await usersPath.doc(user).get();
   let data = userRef.data();
-  if (data?.avatarUrl?.includes(user)) {
-    return data.avatarUrl;
+  if (data?.profile_pic_url_hd) {
+    return data.profile_pic_url_hd;
   }
   // Check if session exists or not.
   let sessionCookie = await getSessionCache();
