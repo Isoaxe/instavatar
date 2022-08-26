@@ -16,7 +16,7 @@ const userAgent =
 const db = new Firestore();
 const storage = new Storage();
 const usersPath = db.collection("users");
-const instaPath = db.collection("instagram");
+const loginPath = db.collection("login");
 // TODO: Set bucketId below to value from firebase storage section of project.
 const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
 
@@ -126,7 +126,7 @@ async function getProfilePicUrl(user) {
 
 // Return session cache from Firestore if it exists.
 async function getSessionCache() {
-  let doc = await instaPath.doc("__session").get();
+  let doc = await loginPath.doc("__session").get();
   let data = doc.data();
   let cookie = data ? data.cookie : null;
   return cookie;
@@ -134,7 +134,7 @@ async function getSessionCache() {
 
 // Store Instagram cookies in Firestore after login for use later.
 async function setSessionCache(cookie) {
-  await instaPath.doc("__session").set({
+  await loginPath.doc("__session").set({
     cookie: cookie,
     created: Date.now(),
   });
