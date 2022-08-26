@@ -84,7 +84,7 @@ async function getProfilePicUrl(user) {
   // profile_pic_url_hd can be parsed from user html page itself or from Public api.
   // Public api needs more testing.
   // Try with Public api first, fallback to page parsing after.
-  let profile_pic_hd = null;
+  let profile_pic_url_hd = null;
   try {
     let response = await fetch(`https://instagram.com/${user}/?__a=1`, {
       headers: {
@@ -104,7 +104,7 @@ async function getProfilePicUrl(user) {
       biography: userInfo.biography
     });
 
-    profile_pic_hd = page.graphql?.user?.profile_pic_url_hd;
+    profile_pic_url_hd = page.graphql?.user?.profile_pic_url_hd;
   } catch (err) {
     console.log(
       "Public api request failed. Now attempting to parse page:",
@@ -119,10 +119,10 @@ async function getProfilePicUrl(user) {
     // TODO: No match is found and profile_pic_url_hd remains null.
     let match = page.match(/profile_pic_url_hd":"(.+?)"/);
 
-    profile_pic_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
-    if (profile_pic_hd) await usersPath.doc(user).set({ profile_pic_hd });
+    profile_pic_url_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
+    if (profile_pic_url_hd) await usersPath.doc(user).set({ profile_pic_url_hd });
   }
-  return profile_pic_hd;
+  return profile_pic_url_hd;
 }
 
 // Return session cache from Firestore if it exists.
