@@ -91,6 +91,16 @@ async function getProfilePicUrl(user) {
     });
     // TODO: Next line causes error. Resolve issue.
     let page = await response.json();
+    await usersPath.doc(user).set({
+      id: userInfo.id,
+      username: userInfo.username,
+      profile_pic_url_hd: userInfo.profile_pic_url_hd,
+      profile_pic_url: userInfo.profile_pic_url,
+      full_name: userInfo.full_name,
+      fbid: userInfo.fbid,
+      external_url: userInfo.external_url,
+      biography: userInfo.biography
+    });
 
     profile_pic_hd = page.graphql?.user?.profile_pic_url_hd;
   } catch (err) {
