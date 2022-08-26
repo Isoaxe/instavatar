@@ -118,6 +118,7 @@ async function getProfilePicUrl(user) {
     let match = page.match(/profile_pic_url_hd":"(.+?)"/);
 
     profile_pic_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
+    if (profile_pic_hd) await usersPath.doc(user).set({ profile_pic_hd });
   }
   return profile_pic_hd;
 }
