@@ -8,6 +8,7 @@ import fetch from 'node-fetch';
 const username = process.env.INSTAGRAM_HANDLE;
 const password = process.env.INSTAGRAM_PASSWORD;
 const loginUrl = "https://www.instagram.com/accounts/login";
+// The userAgent does NOT need to be changed. Any valid userAgent will do.
 const userAgent =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
 
