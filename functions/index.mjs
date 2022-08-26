@@ -17,13 +17,14 @@ const db = new Firestore();
 const storage = new Storage();
 const usersPath = db.collection("users");
 const loginPath = db.collection("login");
+const bucketPath = "avatars";
 // TODO: Set bucketId below to value from firebase storage section of project.
 const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
 
 // Returns avatar url from Firebase Storage. Gets and stores it if not present.
 async function storeProfilePic(user) {
   // Return avatar if it already exists.
-  const file = bucket.file(`avatars/${user}.png`);
+  const file = bucket.file(`${bucketPath}/${user}.png`);
   let exists = await file.exists();
   if (exists[0]) {
     return file.publicUrl();
