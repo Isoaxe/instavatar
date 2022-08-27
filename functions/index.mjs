@@ -88,7 +88,9 @@ async function getProfilePicUrl(user) {
   try {
     let response = await fetch(`https://i.instagram.com/api/v1/users/web_profile_info/?username=${user}`, {
       headers: {
+        "user-agent": userAgent,
         cookie: sessionCookie,
+        "x-ig-app-id": 936619743392459,
       },
     });
     // TODO: Next line causes error. Resolve issue.
