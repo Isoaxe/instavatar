@@ -152,15 +152,15 @@ async function login(username, password) {
   };
   let response = await fetch(url, options);
   let setCookie = response.headers.raw()["set-cookie"];
-  let cookies = "";
+  let cookie = "";
 
   for (let i = 0; i < setCookie.length; i++) {
     let match = setCookie[i].match(/^[^;]+;/);
     if (match) {
-      cookies = `${cookies} ${match[0]}`;
+      cookie = `${cookie} ${match[0]}`;
     }
   }
-  return cookies;
+  return cookie;
 }
 
 // Need to get CSRF token before login.
