@@ -93,7 +93,6 @@ async function getProfilePicUrl(user) {
         "x-ig-app-id": 936619743392459,
       },
     });
-    // TODO: Next line causes error. Resolve issue.
     let page = await response.json();
     profile_pic_url_hd = page.data?.user?.profile_pic_url_hd;
     await usersPath.doc(user).set({ profile_pic_url_hd });
@@ -108,7 +107,6 @@ async function getProfilePicUrl(user) {
       },
     });
     let page = await response.text();
-    // TODO: No match is found and profile_pic_url_hd remains null.
     let match = page.match(/profile_pic_url_hd":"(.+?)"/);
 
     profile_pic_url_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
