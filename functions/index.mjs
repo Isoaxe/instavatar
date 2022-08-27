@@ -137,7 +137,7 @@ async function getSessionCache() {
 async function setSessionCache(cookie) {
   await loginPath.doc("__session").set({
     cookie: cookie,
-    created: Date.now(),
+    created: new Date().toUTCString(Date.now()),
   });
 }
 
