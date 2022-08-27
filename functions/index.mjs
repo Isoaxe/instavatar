@@ -86,7 +86,7 @@ async function getProfilePicUrl(user) {
   // Try with Public api first, fallback to page parsing after.
   let profile_pic_url_hd = null;
   try {
-    let response = await fetch(`https://instagram.com/${user}/?__a=1`, {
+    let response = await fetch(`https://i.instagram.com/api/v1/users/web_profile_info/?username=${user}`, {
       headers: {
         cookie: sessionCookie,
       },
