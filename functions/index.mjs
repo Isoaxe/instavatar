@@ -89,6 +89,7 @@ async function getProfilePicUrl(user) {
     let response = await fetch(`https://i.instagram.com/api/v1/users/web_profile_info/?username=${user}`, {
       headers: {
         "user-agent": userAgent,
+        "Accept": '*/*',
         cookie: sessionCookie,
         "x-ig-app-id": 936619743392459,
       },
@@ -103,6 +104,7 @@ async function getProfilePicUrl(user) {
     );
     let response = await fetch(`https://instagram.com/${user}`, {
       headers: {
+        "Accept": '*/*',
         cookie: sessionCookie,
       },
     });
@@ -140,6 +142,7 @@ async function login(username, password) {
     headers: {
       "user-agent": userAgent,
       "x-csrftoken": csrf,
+      "Accept": '*/*',
       "x-requested-with": "XMLHttpRequest",
       referer: loginUrl,
     },
