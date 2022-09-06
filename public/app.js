@@ -7,9 +7,12 @@ let cache_info = document.querySelector('#cache_info')
 // TODO: Set both api urls to the values associated with your project.
 const localApiUrl = "http://localhost:5001/insta-profile-pic/us-central1/instapic";
 const remoteApiUrl = "https://us-central1-insta-profile-pic.cloudfunctions.net/instapic";
+const localPicUrl = "http://localhost:9199/insta-profile-pic.appspot.com/avatars/";
+const remotePicUrl = "gs://insta-profile-pic.appspot.com/avatars/"
 const local = window.location.hostname === "localhost"; // true if local
 
 const API_URL = local ? localApiUrl : remoteApiUrl;
+const PIC_URL = local ? localPicUrl : remotePicUrl;
 
 btn.addEventListener('click', async e => {
   let user = username.value
