@@ -87,13 +87,15 @@ async function getProfilePicUrl(user) {
   let profile_pic_url_hd = null;
   try {
     let response = await fetch(`https://i.instagram.com/api/v1/users/web_profile_info/?username=${user}`, {
-      headers: {
-        "user-agent": userAgent,
-        "Accept": '*/*',
-        cookie: sessionCookie,
-        "x-ig-app-id": 936619743392459,
-      },
-    });
+        headers:{
+            'User-Agent': userAgent,
+            "x-ig-app-id": "936619743392459",
+            "x-asbd-id": "198387",
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+        }
+    })
     let page = await response.json();
     profile_pic_url_hd = page.data?.user?.profile_pic_url_hd;
     await usersPath.doc(user).set({ profile_pic_url_hd });
