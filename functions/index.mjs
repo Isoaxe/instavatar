@@ -75,12 +75,17 @@ async function getProfilePicUrl(user) {
   if (data?.profile_pic_url_hd) {
     return data.profile_pic_url_hd;
   }
+
+  /*
+  // With this approach, a login to Instagram is no longer required.
   // Check if session exists or not.
   let sessionCookie = await getSessionCache();
   if (!sessionCookie) {
     sessionCookie = await login(username, password);
     await setSessionCache(sessionCookie);
   }
+  */
+
   // profile_pic_url_hd can be parsed from user html page itself or from Public api.
   // Public api needs more testing.
   // Try with Public api first, fallback to page parsing after.
