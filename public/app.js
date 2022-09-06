@@ -2,8 +2,7 @@ let username = document.querySelector('#username');
 let btn = document.querySelector('#get_avatar');
 let img = document.querySelector('#result');
 
-// Set API_URL based on whether locally hosted emulator is running or not.
-// TODO: Set both api urls to the values associated with your project.
+// TODO: Set all six URLs to the values associated with your project.
 const localApiUrl = "http://localhost:5001/insta-profile-pic/us-central1/instapic";
 const remoteApiUrl = "https://us-central1-insta-profile-pic.cloudfunctions.net/instapic";
 const localPicUrl = "http://localhost:9199/insta-profile-pic.appspot.com/avatars/";
@@ -13,6 +12,7 @@ const remoteProxyUrl = "https://private-cors-server.herokuapp.com/";
 
 const local = window.location.hostname === "localhost"; // true if local
 
+// Set URLs below based on whether locally hosted emulator is running or not.
 const API_URL = local ? localApiUrl : remoteApiUrl;
 const PIC_URL = local ? localPicUrl : remotePicUrl;
 const PROXY_URL = local ? localProxyUrl : remoteProxyUrl;
