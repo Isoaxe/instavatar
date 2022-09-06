@@ -1,7 +1,6 @@
 let username = document.querySelector('#username')
 let btn = document.querySelector('#get_avatar')
 let img = document.querySelector('#result')
-let cache_info = document.querySelector('#cache_info')
 
 // Set API_URL based on whether locally hosted emulator is running or not.
 // TODO: Set both api urls to the values associated with your project.
@@ -22,5 +21,4 @@ btn.addEventListener('click', async e => {
   let result = await fetch(`${PROXY_URL}${API_URL}?username=${user}`);
   username.value = null
   img.src = PIC_URL + user + ".png";
-  cache_info.innerText = j.from_cache
 })
