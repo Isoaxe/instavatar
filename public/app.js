@@ -21,5 +21,6 @@ btn.addEventListener('click', async e => {
   let user = username.value
   let result = await fetch(`${PROXY_URL}${API_URL}?username=${user}`);
   username.value = null
+  img.src = PIC_URL + user + ".png";
   cache_info.innerText = j.from_cache
 })
