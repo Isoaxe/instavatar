@@ -19,7 +19,7 @@ const PROXY_URL = local ? localProxyUrl : remoteProxyUrl;
 
 btn.addEventListener('click', async e => {
   let user = username.value
-  let result = await fetch(`${API_URL}?username=${user}`)
+  let result = await fetch(`${PROXY_URL}${API_URL}?username=${user}`);
   let j = await result.json()
   console.log(j)
   username.value = null
