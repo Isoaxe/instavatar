@@ -105,12 +105,14 @@ async function getProfilePicUrl(user) {
       "Public api request failed. Now attempting to parse page:",
       err
     );
-    let response = await fetch(`https://instagram.com/${user}`, {
-      headers: {
-        "Accept": '*/*',
-        cookie: sessionCookie,
-      },
-    });
+    const response = await fetch(`https://www.instagram.com/${username}`, {
+        headers: {
+            'User-Agent': userAgent,
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+        }
+    })
     let page = await response.text();
     let match = page.match(/profile_pic_url_hd":"(.+?)"/);
 
