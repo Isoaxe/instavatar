@@ -218,25 +218,5 @@ let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   }
 })
 
-// Return image itself on requested url
-let instapicData = functions.runWith(secrets).https.onRequest(async (req, res) => {
-  let user = req.query.username
-  let url = null
-  if (user) {
-    url = await storeProfilePic(user)
-  }
 
-  if (url) {
-    const file = bucket.file(`${bucketPath}/${user}.png`).createReadStream({
-      validation: false
-    })
-    file.pipe(res)
-  } else {
-    res.status(404);
-    res.end("not found")
-  }
-
-})
-
-
-export { instapic, instapicData }
+export { instapic }
