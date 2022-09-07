@@ -7,7 +7,6 @@ import fetch from 'node-fetch';
 const db = new Firestore();
 const storage = new Storage();
 const usersPath = db.collection("users"); // Firestore path.
-const loginPath = db.collection("login"); // Firestore path.
 const bucketPath = "avatars"; // Firebase storage path.
 // TODO: Set bucketId below to value from firebase storage section of project.
 const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
@@ -105,7 +104,7 @@ async function getProfilePicUrl(user) {
 }
 
 // Obtain image if needed and redirect to bucket public url
-let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
+let instapic = functions.https.onRequest(async (req, res) => {
   let user = req.query.username
   let url = null
   if (user) {
