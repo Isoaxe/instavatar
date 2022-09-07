@@ -2,6 +2,9 @@ let username = document.querySelector('#username');
 let btn = document.querySelector('#get_avatar');
 let img = document.querySelector('#result');
 
+// TODO: Set CORS proxy server based on desired environment.
+const IS_LOCAL_PROXY = true;
+
 // TODO: Set all six URLs to the values associated with your project.
 const localApiUrl = "http://localhost:5001/insta-profile-pic/us-central1/instapic";
 const remoteApiUrl = "https://us-central1-insta-profile-pic.cloudfunctions.net/instapic";
@@ -15,7 +18,7 @@ const local = window.location.hostname === "localhost"; // true if local
 // Set URLs below based on whether locally hosted emulator is running or not.
 const API_URL = local ? localApiUrl : remoteApiUrl;
 const PIC_URL = local ? localPicUrl : remotePicUrl;
-const PROXY_URL = local ? localProxyUrl : remoteProxyUrl;
+const PROXY_URL = IS_LOCAL_PROXY ? localProxyUrl : remoteProxyUrl;
 
 btn.addEventListener('click', async e => {
   let user = username.value;
