@@ -9,6 +9,14 @@ const loginUrl = "https://www.instagram.com/accounts/login";
 const userAgent =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
 
+// Define secrets available in the app.
+const secrets = {
+  secrets: [
+    "INSTAGRAM_HANDLE",
+    "INSTAGRAM_PASSWORD",
+  ],
+};
+
 // Check if session exists or not, returns session cookie.
 // Cookie is then added to Instagram API request header.
 async function getSessionCookie() {
