@@ -23,6 +23,8 @@ const PROXY_URL = IS_LOCAL_PROXY ? localProxyUrl : remoteProxyUrl;
 button.addEventListener('click', async e => {
   let user = username.value;
   let result = await fetch(`${PROXY_URL}${API_URL}?username=${user}`);
+  const json = await result.json();
+  const url = json.url;
   username.value = null;
-  image.src = PIC_URL + user + ".png";
+  image.src = url;
 })
