@@ -19,3 +19,72 @@ async function getSessionCookie() {
   }
   return sessionCookie;
 }
+
+/*
+ *   Helper functions below are for the above function.
+ */
+
+// Return session cache from Firestore if it exists.
+async function getSessionCache() {
+ let doc = await loginPath.doc("__session").get();
+ let data = doc.data();
+ let cookie = data ? data.cookie : null;
+ return cookie;
+}
+
+// Store Instagram cookies in Firestore after login for use later.
+async function setSessionCache(cookie) {
+ await loginPath.doc("__session").set({
+   cookie: cookie,
+   created: new Date().toUTCString(Date.now()),
+ });
+}
+
+// Do login and return resulting cookie string.
+async function login(username, password) {
+ let url = `${loginUrl}/ajax/`;
+ let csrf = await csrfToken();
+ let options = {
+   method: "POST",
+   headers: {
+     "user-agent": userAgent,
+     "x-csrftoken": csrf,
+     "Accept": '*/*',
+     "x-requested-with": "XMLHttpRequest",
+     referer: loginUrl,
+   },
+   body: new URLSearchParams({
+     enc_password: `#PWD_INSTAGRAM_BROWSER:0:${Date.now()}:${password}`,
+     username,
+     queryParams: "{}",
+     optIntoOneTap: "false",
+   }),
+ };
+ let response = await fetch(url, options);
+ let setCookie = response.headers.raw()["set-cookie"];
+ let cookie = "";
+
+ for (let i = 0; i < setCookie.length; i++) {
+   let match = setCookie[i].match(/^[^;]+;/);
+   if (match) {
+     cookie = `${cookie} ${match[0]}`;
+   }
+ }
+ return cookie;
+}
+
+// Need to get CSRF token before login.
+async function csrfToken() {
+ let options = {
+   method: "GET",
+   headers: {
+     host: "www.instagram.com",
+     "user-agent": userAgent,
+   },
+ };
+ let response = await fetch(loginUrl, options);
+ let page = await response.text();
+ /* eslint-disable no-useless-escape */
+ let csrf = page.match(/csrf_token\":\"(.*?)\"/);
+ return csrf !== null ? csrf[1] : null;
+}
