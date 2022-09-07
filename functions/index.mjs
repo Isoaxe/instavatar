@@ -104,14 +104,6 @@ async function getProfilePicUrl(user) {
   return profile_pic_url_hd;
 }
 
-// Define secrets available in the app.
-const secrets = {
-  secrets: [
-    "INSTAGRAM_HANDLE",
-    "INSTAGRAM_PASSWORD",
-  ],
-};
-
 // Obtain image if needed and redirect to bucket public url
 let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
