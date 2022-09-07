@@ -3,6 +3,10 @@ import { Storage } from '@google-cloud/storage';
 import functions from 'firebase-functions';
 import fetch from 'node-fetch';
 
+// The userAgent does NOT need to be changed. Any valid userAgent will do.
+const userAgent =
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
+
 // Initialize Firebase products.
 const db = new Firestore();
 const storage = new Storage();
