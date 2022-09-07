@@ -115,7 +115,7 @@ let instapic = functions.https.onRequest(async (req, res) => {
     url = await storeProfilePic(user)
   }
   if (url) {
-    res.redirect(url)
+    res.send({ url });
   } else {
     console.log('not found')
     res.status(404);
