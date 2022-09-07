@@ -10,7 +10,7 @@ const password = process.env.INSTAGRAM_PASSWORD;
 const loginUrl = "https://www.instagram.com/accounts/login";
 // The userAgent does NOT need to be changed. Any valid userAgent will do.
 const userAgent =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36";
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
 
 // Initialize Firebase products.
 const db = new Firestore();
@@ -75,48 +75,51 @@ async function getProfilePicUrl(user) {
   if (data?.profile_pic_url_hd) {
     return data.profile_pic_url_hd;
   }
+
+  /*
+  // With this approach, a login to Instagram is no longer required.
   // Check if session exists or not.
   let sessionCookie = await getSessionCache();
   if (!sessionCookie) {
     sessionCookie = await login(username, password);
     await setSessionCache(sessionCookie);
   }
+  */
+
   // profile_pic_url_hd can be parsed from user html page itself or from Public api.
   // Public api needs more testing.
   // Try with Public api first, fallback to page parsing after.
   let profile_pic_url_hd = null;
   try {
-    let response = await fetch(`https://instagram.com/${user}/?__a=1`, {
-      headers: {
-        cookie: sessionCookie,
-      },
-    });
-    // TODO: Next line causes error. Resolve issue.
+    const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${user}`
+    const response = await fetch(url, {
+        headers:{
+            'User-Agent': userAgent,
+            "x-ig-app-id": "936619743392459",
+            "x-asbd-id": "198387",
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+        }
+    })
     let page = await response.json();
-    await usersPath.doc(user).set({
-      id: userInfo.id,
-      username: userInfo.username,
-      profile_pic_url_hd: userInfo.profile_pic_url_hd,
-      profile_pic_url: userInfo.profile_pic_url,
-      full_name: userInfo.full_name,
-      fbid: userInfo.fbid,
-      external_url: userInfo.external_url,
-      biography: userInfo.biography
-    });
-
-    profile_pic_url_hd = page.graphql?.user?.profile_pic_url_hd;
+    profile_pic_url_hd = page.data?.user?.profile_pic_url_hd;
+    await usersPath.doc(user).set({ profile_pic_url_hd });
   } catch (err) {
     console.log(
       "Public api request failed. Now attempting to parse page:",
       err
     );
-    let response = await fetch(`https://instagram.com/${user}`, {
-      headers: {
-        cookie: sessionCookie,
-      },
-    });
+    const url = `https://www.instagram.com/${username}/?&__a=1&__d=dis`
+    const response = await fetch(url, {
+        headers: {
+            'User-Agent': userAgent,
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+        }
+    })
     let page = await response.text();
-    // TODO: No match is found and profile_pic_url_hd remains null.
     let match = page.match(/profile_pic_url_hd":"(.+?)"/);
 
     profile_pic_url_hd = match !== null ? JSON.parse(`["${match[1]}"]`)[0] : null;
@@ -150,6 +153,7 @@ async function login(username, password) {
     headers: {
       "user-agent": userAgent,
       "x-csrftoken": csrf,
+      "Accept": '*/*',
       "x-requested-with": "XMLHttpRequest",
       referer: loginUrl,
     },
@@ -162,15 +166,15 @@ async function login(username, password) {
   };
   let response = await fetch(url, options);
   let setCookie = response.headers.raw()["set-cookie"];
-  let cookies = "";
+  let cookie = "";
 
   for (let i = 0; i < setCookie.length; i++) {
     let match = setCookie[i].match(/^[^;]+;/);
     if (match) {
-      cookies = `${cookies} ${match[0]}`;
+      cookie = `${cookie} ${match[0]}`;
     }
   }
-  return cookies;
+  return cookie;
 }
 
 // Need to get CSRF token before login.
@@ -197,7 +201,6 @@ const secrets = {
   ],
 };
 
-// Redirect version example.
 // Obtain image if needed and redirect to bucket public url
 let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
@@ -214,25 +217,5 @@ let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   }
 })
 
-// Return image itself on requested url
-let instapicData = functions.runWith(secrets).https.onRequest(async (req, res) => {
-  let user = req.query.username
-  let url = null
-  if (user) {
-    url = await storeProfilePic(user)
-  }
 
-  if (url) {
-    const file = bucket.file(`${bucketPath}/${user}.png`).createReadStream({
-      validation: false
-    })
-    file.pipe(res)
-  } else {
-    res.status(404);
-    res.end("not found")
-  }
-
-})
-
-
-export { instapic, instapicData }
+export { instapic }
