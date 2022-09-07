@@ -201,7 +201,6 @@ const secrets = {
   ],
 };
 
-// Redirect version example.
 // Obtain image if needed and redirect to bucket public url
 let instapic = functions.runWith(secrets).https.onRequest(async (req, res) => {
   let user = req.query.username
