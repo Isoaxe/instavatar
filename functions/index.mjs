@@ -68,7 +68,6 @@ async function getProfilePicUrl(user) {
   }
 
   // profile_pic_url_hd can be parsed from user html page itself or from Public api.
-  // Public api needs more testing.
   // Try with Public api first, fallback to page parsing after.
   let profile_pic_url_hd = null;
   try {
