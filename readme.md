@@ -25,4 +25,5 @@ Run `npm run dev` from the root directory. This starts all emulators as availabl
 
 Run through the items labelled as `TODO` in the project. It is advised to do a global search in your code editor to find them all. They are listed below in any case.
   1. Set the [`bucketId`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L15) in `index.mjs` to the Firebase storage URL for the project. This can be accessed from the Firebase console in the browser.
+  2. When testing with a local proxy, the [`IS_LOCAL_PROXY`](https://github.com/Isoaxe/instavatar/blob/master/public/app.js#L5) flag can be left as `true`. However, when moving to a remotely hosted CORS proxy, change the flag to `false`.
   3. There are two [urls](https://github.com/Isoaxe/instavatar/blob/master/app.js#L8) associated with the local and hosted Firebase functions. These need to be changed to the values associated with the new Firebase project that was made.
