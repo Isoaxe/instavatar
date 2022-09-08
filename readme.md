@@ -32,3 +32,4 @@ Run through the items labelled as `TODO` in the project. It is advised to do a g
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
+As stated above, if just testing this app in development mode, the `IS_LOCAL_PROXY` flag can be set to `false` and the existing value of `remoteProxyUrl` can be used.
