@@ -1,7 +1,15 @@
 import Firestore from '@google-cloud/firestore';
 import fetch from 'node-fetch';
 
-// Instagram credentials should be from an account created specifically for programmatic login.
+/*
+ *   Programmatic login to Instagram and subsequent cookie retrieval via a viewer
+ *   account is no longer required.
+ *
+ *   Thus, this ENTIRE FILE can be IGNORED. It is being retained in case the
+ *   functionality needs to be reinstated in the future.
+ */
+
+// Instagram credentials should be from an account created specifically for login.
 const username = process.env.INSTAGRAM_HANDLE;
 const password = process.env.INSTAGRAM_PASSWORD;
 const loginUrl = "https://www.instagram.com/accounts/login";

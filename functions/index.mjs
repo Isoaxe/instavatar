@@ -12,7 +12,7 @@ const db = new Firestore();
 const storage = new Storage();
 const usersPath = db.collection("users"); // Firestore path.
 const bucketPath = "avatars"; // Firebase storage path.
-// TODO: Set bucketId below to value from firebase storage section of project.
+// TODO#1: Set bucketId below to value from firebase storage section of project.
 const bucket = storage.bucket("gs://insta-profile-pic.appspot.com");
 
 // Returns avatar url from Firebase Storage. Gets and stores it if not present.

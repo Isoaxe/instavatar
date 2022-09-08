@@ -2,6 +2,10 @@
 
 A program that harvests profile pictures from Instagram. The avatar is then stored in a Firebase storage bucket for future use. This is to reduce the amount of requests to the Instagram API as too many will result in the account being blocked.
 
+# `IMPORTANT NOTICE`
+
+### Due to some remaining issues, it is currently only possible to use a locally-hosted version of `instavatar` paired with a local instance of the CORS server.
+
 
 ## Getting started
 
@@ -17,17 +21,19 @@ Both Firestore and storage will need to be set up from within the [Firebase cons
 
 Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database, functions and emulators) as the initialisation files are already included within the app.
 
-### Create Instagram account
+### Set up CORS reverse-proxy server
 
-Create a new Instagram account and take note of the handle and password. These will be used to set the `username` and `password` as outlined in the 'Configure variables' section below. An account is required for the app to programmatically login to Instagram and query the API.
+CORS headers need to be added to the Instagram API request in order for it to succeed. This is done by [setting up a server](https://github.com/Isoaxe/cors-server). As noted in its `readme`, you will be able to _test_ a proxied app such as `instavatar` if it's run in development mode (using `localhost` ports `3000` or `5000`). That is, you can test `instavatar` locally using the remotely-hosted server provided there. To do so, simply leave the value of [`remoteProxyUrl`](https://github.com/Isoaxe/instavatar/blob/master/public/app.js#L12) unaltered. If you want to deploy `instavatar` so that it's also hosted remotely, you will need to set up your own instance of the CORS proxy server.
+
+### Configure variables
+
+Run through the items labelled as `TODO` in the project. It is advised to do a global search in your code editor to find them all. They are listed below in any case.
+  1. Set the [`bucketId`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L15) in `index.mjs` to the Firebase storage URL for the project. This can be accessed from the Firebase console in the browser.
+  2. When testing with a local proxy, the [`IS_LOCAL_PROXY`](https://github.com/Isoaxe/instavatar/blob/master/public/app.js#L5) flag can be left as `true`. However, when moving to a remotely hosted CORS proxy, change the flag to `false`.
+  3. There are four [URLs](https://github.com/Isoaxe/instavatar/blob/master/public/app.js#L8) that need to be changed. The first two are associated with the local and remote Firebase functions for this project that retrieve the Instagram avatar. The second pair are the local and remote URLs for the CORS proxy server which is the companion project as described previously.
+  4. Replace the value of the `default` field in [`.firebaserc`](https://github.com/Isoaxe/instavatar/blob/master/.firebaserc.js#L3) with your Firebase `project-id`.
 
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
-
-### Configure variables
-
-Run through the items labelled as `TODO` in the project. It is advised to do a global search in your code editor (`cmd` + `shift` + `f` on Mac) for `TODO` to find them all.
-  1. The Instagram [`username`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L8) and [`password`](https://github.com/Isoaxe/instavatar/blob/master/functions/index.mjs#L9) are set as environment variables via the [firebase secrets manager](https://firebase.google.com/docs/functions/config-env#secret-manager). It is advised to `set` the `INSTAGRAM_HANDLE` and `INSTAGRAM_PASSWORD` secrets so that they are accessible by `username` and `password` respectively. This can be done by running `firebase functions:secrets:set SECRET_NAME` in the CLI. Alternatively, hardcode the values to these variables. This is not advised if the code is shared, for example on GitHub.
-  2. Also set `bucketId` to the value taken from Firebase storage in the project.
-  3. There are two [urls](https://github.com/Isoaxe/instavatar/blob/master/app.js#L8) associated with the local and hosted Firebase functions. These need to be changed to the values associated with the new Firebase project that was made.
+As stated above, if just testing this app in development mode, the `IS_LOCAL_PROXY` flag can be set to `false` and the existing value of `remoteProxyUrl` can be used.
