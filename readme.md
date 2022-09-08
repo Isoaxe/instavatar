@@ -19,7 +19,7 @@ Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `fireb
 
 ### Set up CORS reverse-proxy server
 
-CORS headers need to be added to the Instagram API request in order for it to succeed. This is done by [setting up a server](https://github.com/Isoaxe/cors-server). As noted in its `readme`, you will be able to _test_ a proxied app such as `instavatar` if it's run in development mode (using `localhost` ports `3000` or `5000`). That is, you can test `instavatar` locally using the remotely-hosted server provided there. If you want to deploy `instavatar` so that it's also hosted remotely, you will need to set up your own instance of the CORS proxy server.
+CORS headers need to be added to the Instagram API request in order for it to succeed. This is done by [setting up a server](https://github.com/Isoaxe/cors-server). As noted in its `readme`, you will be able to _test_ a proxied app such as `instavatar` if it's run in development mode (using `localhost` ports `3000` or `5000`). That is, you can test `instavatar` locally using the remotely-hosted server provided there. To do so, simply leave the value of [`remoteProxyUrl`](https://github.com/Isoaxe/instavatar/blob/master/public/app.js#L12) unaltered. If you want to deploy `instavatar` so that it's also hosted remotely, you will need to set up your own instance of the CORS proxy server.
 
 ### Configure variables
 
