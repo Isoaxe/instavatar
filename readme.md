@@ -17,6 +17,10 @@ Both Firestore and storage will need to be set up from within the [Firebase cons
 
 Run `npm install -g firebase-tools` to install the Firebase CLI. Then run `firebase login` from the root directory. No need to initialise the various Firebase services (hosting, Firestore database, functions and emulators) as the initialisation files are already included within the app.
 
+### Set up CORS reverse-proxy server
+
+CORS headers need to be added to the Instagram API request in order for it to succeed. This is done by [setting up a server](https://github.com/Isoaxe/cors-server). As noted in its `readme`, you will be able to _test_ a proxied app such as `instavatar` if it's run in development mode (using `localhost` ports `3000` or `5000`). That is, you can test `instavatar` locally using the remotely-hosted server provided there. If you want to deploy `instavatar` so that it's also hosted remotely, you will need to set up your own instance of the CORS proxy server.
+
 ### Development mode
 
 Run `npm run dev` from the root directory. This starts all emulators as available from the `localhost:4000` Firebase UI to enable local testing. Includes Firestore, Functions and Hosting emulators.
