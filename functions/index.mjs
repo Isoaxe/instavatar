@@ -90,7 +90,7 @@ async function getProfilePicUrl(user) {
       "Public api request failed. Now attempting to parse page:",
       err
     );
-    const url = `https://www.instagram.com/${username}/?&__a=1&__d=dis`
+    const url = `https://www.instagram.com/${user}/?&__a=1&__d=dis`
     const response = await fetch(url, {
         headers: {
             'User-Agent': userAgent,
